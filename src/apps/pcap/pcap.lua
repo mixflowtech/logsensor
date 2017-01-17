@@ -56,3 +56,17 @@ function PcapWriter:push ()
    end
 end
 
+-- RAW Packet Dumper
+StdOutput = {}
+
+function StdOutput:new ()
+   -- FIXME: an option data dump to stderr | stdout
+   return setmetatable({}, {__index = StdOutput})
+end
+
+function StdOutput:push ()
+   while not link.empty(self.input.input) do
+      local p = link.receive(self.input.input)
+      print(ffi.string(p.data, p.length))    -- output package data to console
+   end
+end

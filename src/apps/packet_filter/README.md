@@ -1,4 +1,4 @@
-# PcapFilter App (apps.packet_filter.pcap_filter)
+ # PcapFilter App (apps.packet_filter.pcap_filter)
 
 The `PcapFilter` app receives packets on the `input` port and transmits
 conforming packets to the `output` port. In order to conform, a packet
