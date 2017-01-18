@@ -27,6 +27,7 @@ function run (parameters)
       {filter=v4_rules})
 
    config.app(c, "dump", pcap.StdOutput, {})
+   -- config.app(c, "dump", pcap.PcapWriter, {'1.pcap'})
 
    config.link(c, "capture.tx -> pcap_filter.input")
    config.link(c, "pcap_filter.output -> dump.input")

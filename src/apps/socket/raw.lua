@@ -55,6 +55,11 @@ function RawSocket:pull ()
       limit = limit - 1
       link.transmit(l, self:receive())
    end
+   --[[
+   if engine.pull_npackets - limit > 0 then
+      print("raw: pull"..(engine.pull_npackets - limit))
+   end
+   ]]--
 end
 
 function RawSocket:can_receive ()
@@ -70,6 +75,9 @@ function RawSocket:receive ()
    local p = self.rx_p
    local sz = assert(S.read(self.sock, p.data, packet.max_payload))
    p.length = sz
+   -- try dump udp data here, might be the complex host network env?
+   -- print(self.shm.rxbytes)
+   -- print(ffi.string(p.data, p.length))
    counter.add(self.shm.rxbytes, sz)
    counter.add(self.shm.rxpackets)
    if ethernet:is_mcast(p.data) then

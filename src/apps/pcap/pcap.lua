@@ -65,6 +65,7 @@ end
 local lib = require("core.lib")
 local bit = require("bit")
 local udp  = require("lib.protocol.udp")
+local ipv4  = require("lib.protocol.ipv4")
 
 local band, bnot = bit.band, bit.bnot
 local rshift, lshift = bit.rshift, bit.lshift
@@ -90,11 +91,12 @@ StdOutput = {}
 
 function StdOutput:new ()
    -- FIXME: an option data dump to stderr | stdout
-   return setmetatable({}, {__index = StdOutput})
+   return setmetatable({prev_ip_id = 0}, {__index = StdOutput})
 end
 
 function StdOutput:push ()
-   -- ether packet format: source_mac(6), dest_mac(6), pkg_type(2), data[...], checksum(4)
+   -- ether packet format: source_mac(6), dest_mac(6), pkg_type(2), data[...], checksum(4)\
+                                                   -- 0x0800： IP
    --[[
       ip head:
          ver(4bit) ip_head_size(4bit)
@@ -106,6 +108,7 @@ function StdOutput:push ()
          flag(3bit), fragment_offset(13bit)
          -
          ttl(8bit)
+         protocol(8bit) --  17    UDP
          checksum(16bit)
          -
          source(32bit)
@@ -135,17 +138,26 @@ function StdOutput:push ()
    while not link.empty(self.input.input) do
       local p = link.receive(self.input.input)
       -- only support ethernet..
+      local pkt = ethernet:new_from_mem(p.data, ethernet_header_size)
       local ipv4_header = get_ethernet_payload(p)
+      local ip = ipv4:new_from_mem(ipv4_header, get_ipv4_header_length(ipv4_header))
       local udp_header = get_ipv4_payload(ipv4_header)
       local udp = udp:new_from_mem(udp_header, UDP_HDR_SIZE)
-      print(udp:src_port())
-      print(udp:dst_port())
-      print(udp:length() - UDP_HDR_SIZE)
-      -- print("sss "..payload_size.."==="..p.length.."\n")
-      -- print(p.data)    -- output package data to console
-      -- print(p.data + ehs+20+8)    -- output package data to console
+      -- dirty fix & work around with the read bug in raw-socket
+      if self.prev_ip_id == ip:id() then
+         packet.free(p)
+      else
+         self.prev_ip_id = ip:id()
+         -- print(udp:src_port())
+         -- print(udp:dst_port())
+         -- print(udp:length() - UDP_HDR_SIZE)
+         -- print("sss "..payload_size.."==="..p.length.."\n")
+         -- print(p.data)    -- output package data to console
+         -- print(p.data + ehs+20+8)    -- output package data to console
+         -- print('ip: '..ffi.string(ip:src())..' -> '..ffi.string(ip:dst()))
+         print(ffi.string(udp_header+UDP_HDR_SIZE, udp:length() - UDP_HDR_SIZE))
+         packet.free(p)
+      end
 
-      print(ffi.string(udp_header+UDP_HDR_SIZE, udp:length() - UDP_HDR_SIZE))
-      packet.free(p)
    end
 end
