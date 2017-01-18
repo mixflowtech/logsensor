@@ -11,7 +11,6 @@ local counter = require("core.counter")
 local ethernet = require("lib.protocol.ethernet")
 local ffi = require("ffi")
 local C = ffi.C
-
 local c, t = S.c, S.types.t
 
 RawSocket = {}
