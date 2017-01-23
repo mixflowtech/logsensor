@@ -1,0 +1,3 @@
+[submodule "lib/luv"]
+	path = lib/luv
+	url = ../luv.git
