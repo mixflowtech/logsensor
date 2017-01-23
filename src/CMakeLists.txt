@@ -14,13 +14,10 @@ enable_language(LUA OPTIONAL)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}/lib/luajit/src/
+    ${CMAKE_SOURCE_DIR}/lib/luv/src/
+    ${CMAKE_SOURCE_DIR}/lib/luv/deps/libuv/include/
     ${CMAKE_SOURCE_DIR}/src/
     )
-
-#	$(Q) $(CC) $(DEBUG) -Wl,--no-as-needed -Wl,-E -Werror -Wall -o $@ $^ \
-# 	    ../lib/luajit/src/libluajit.a \
-#
-set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Werror -Wall ${CMAKE_C_FLAGS}")
 
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lrt -lc -ldl -lm -lpthread ")
 
@@ -58,14 +55,20 @@ foreach(lua_head ${LUA_HEADERS})
                                 PROPERTIES COMPILE_FLAGS "-n ${lua_source_module_name}")
 endforeach()
 
-message(${LUA_LUA_HEADERS_SRCS})
+# message(${LUA_LUA_HEADERS_SRCS})
 
 # Lua Module
 set(LUA_SRCS
     core/startup.lua
     core/main.lua
     core/shm.lua
+    core/lib.lua
+    lib/lua/alt_getopt.lua
+    lib/lua/class.lua
+    lib/lua/StackTracePlus.lua
+    lib/lua/strict.lua
     lib/ipc/shmem/shmem.lua
+    jit/zone.lua
     )
 
 foreach(lua_source ${LUA_SRCS})
@@ -92,12 +95,11 @@ set_source_files_properties(arch/sse2.c
                                 PROPERTIES COMPILE_FLAGS " -O2 -msse2 ")
 
 add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA_SRCS})
-
 # Link the executable to the Hello library. Since the Hello library has
 # public include directories we will use those link directories when building
 # helloDemo
 
-add_dependencies(snabb luajit copy_ljsyscall)
+add_dependencies(snabb luajit make_ln_luajit copy_ljsyscall luv )
 target_link_libraries(snabb ${CMAKE_SOURCE_DIR}/lib/luajit/src/libluajit.a)
 
 # target_link_libraries (snabb LINK_PUBLIC luajit)
