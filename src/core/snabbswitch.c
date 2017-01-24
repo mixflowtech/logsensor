@@ -7,6 +7,7 @@
 #include "lauxlib.h"
 // #include "luv_pub.h"
 #include <stdint.h>
+#include <string.h>
 
 #if UINTPTR_MAX != UINT64_MAX
 #error "64-bit word size required. See doc/porting.md."
@@ -45,6 +46,15 @@ int main(int snabb_argc, char **snabb_argv)
   // n = luaopen_luv(L);
   // luaopen_foo(L);
   // printf("load %d ===", n);
+  if(argc >=3 && strcmp(argv[1], "-f") == 0)
+  {
+    n = luaL_dofile(L, argv[2]);
+    if(n) {
+         printf("%s\n", lua_tostring(L, -1));
+    }
+    return n;
+  }
+
   n = luaL_dostring(L, "require \"core.startup\"");
   if(n) {
      printf("%s\n", lua_tostring(L, -1));
