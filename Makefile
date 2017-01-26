@@ -26,6 +26,7 @@ all: $(LUAJIT) $(SYSCALL) $(PFLUA)
 	@cp -p lib/ljndpi/ndpi/*.lua src/ndpi/
 	cd src && $(MAKE)
 	ln -sf src/snabb snabb-wall
+	ln -sf src/snabb snabb-lgs
 
 install: all
 	install -D src/snabb ${DESTDIR}${PREFIX}/bin/snabb-wall
