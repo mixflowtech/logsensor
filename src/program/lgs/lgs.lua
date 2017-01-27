@@ -7,21 +7,12 @@ local function show_usage(exit_code)
    main.exit(exit_code)
 end
 
-function elementText(el)
-   local pieces = {}
-   for _,n in ipairs(el.kids) do
-      if n.type=='element' then pieces[#pieces+1] = elementText(n)
-      elseif n.type=='text' then pieces[#pieces+1] = n.value
-      end
+function run(args)
+   if #args == 0 then show_usage(1) end
+   local command = string.gsub(table.remove(args, 1), "-", "_")
+   local modname = ("program.lgs.%s.%s"):format(command, command)
+   if not lib.have_module(modname) then
+      show_usage(1)
    end
-   return table.concat(pieces)
-end
-
-function run (parameters)
-   --
-   local SLAXML = require('lib.slaxml.slaxdom')
-   local myxml = '<a>测试</a>'
-   local doc = SLAXML:dom(myxml)
-   print(doc.root)
-   print(elementText(doc.root))
+   require(modname).run(args)
 end

@@ -18,7 +18,7 @@ obj
 .images
 /lib/luajit/usr
 ./snabb-wall
-./snabb-lgs
+/snabb-lgs
 
 # common cmake building path
 /build
