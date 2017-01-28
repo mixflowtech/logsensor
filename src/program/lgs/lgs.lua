@@ -29,8 +29,11 @@ function run(args)
    if not lib.have_module(modname) then
       show_usage(1)
    end
-   -- require(modname).run(args)
+   require(modname).run(args)
+   --[[
    local fd, err = S.open("README.md", "rdonly")
    local stat = uv.fs_fstat(fd:getfd())
+   S.close(fd)
    print(dump(stat))
+   ]]
 end

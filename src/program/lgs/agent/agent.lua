@@ -44,15 +44,18 @@ function run (raw_args)
     config.app(c, "engine", cli_engine_app.CliEngine, engine)
     config.link(c, "stdin.tx -> engine.rx")
 
+    --[[
     -- packet dump demo
     local interface = 'lo'
     config.app(c, "capture", raw.RawSocket, interface)
     config.app(c, "dump", pcap.StdOutput, {})
     config.link(c, "capture.tx -> dump.input")
+    --]]
 
     engine.configure(c)
     engine.main({report = {showlinks=true}})
-    if start_repl then repl() end
+    -- handle repl in cli_engine_app
+    -- if start_repl then repl() end
 end
 
 -- The Master will tell the Agent what to do via this repl shell.
