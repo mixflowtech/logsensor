@@ -5,6 +5,7 @@ module(..., package.seeall)
 local lib = require("core.lib")
 local stdin_app = require("apps.basic.stdin")
 local basic_app = require("apps.basic.basic_apps")
+local cli_engine_app = require("apps.cli.cli")
 
 local pcap = require("apps.pcap.pcap")
 local raw = require("apps.socket.raw")
@@ -40,8 +41,9 @@ function run (raw_args)
 
     local c = config.new()
     config.app(c, "stdin", stdin_app.Stdin, "\n")
-    config.app(c, "sink", basic_app.Sink)
-    config.link(c, "stdin.tx -> sink.rx")
+    config.app(c, "engine", cli_engine_app.CliEngine, engine)
+    config.link(c, "stdin.tx -> engine.rx")
+
     -- packet dump demo
     local interface = 'lo'
     config.app(c, "capture", raw.RawSocket, interface)
