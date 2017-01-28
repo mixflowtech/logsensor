@@ -5,6 +5,10 @@ module(..., package.seeall)
 local lib = require("core.lib")
 local stdin_app = require("apps.basic.stdin")
 local basic_app = require("apps.basic.basic_apps")
+
+local pcap = require("apps.pcap.pcap")
+local raw = require("apps.socket.raw")
+
 local usage = require("program.lgs.agent.README_inc")
 
 local long_opts = {
@@ -37,11 +41,14 @@ function run (raw_args)
     local c = config.new()
     config.app(c, "stdin", stdin_app.Stdin, "\n")
     config.app(c, "sink", basic_app.Sink)
-
     config.link(c, "stdin.tx -> sink.rx")
+    -- packet dump demo
+    local interface = 'lo'
+    config.app(c, "capture", raw.RawSocket, interface)
+    config.app(c, "dump", pcap.StdOutput, {})
+    config.link(c, "capture.tx -> dump.input")
 
     engine.configure(c)
-
     engine.main({report = {showlinks=true}})
     if start_repl then repl() end
 end
