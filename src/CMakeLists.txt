@@ -27,6 +27,9 @@ set(LUA_HEADERS
     core/lib.h
     core/link.h
     core/clib.h
+    core/memory.h
+    core/counter.h
+    core/packet.h
     lib/ipc/shmem/shmem.h
     )
 
@@ -59,16 +62,58 @@ endforeach()
 
 # Lua Module
 set(LUA_SRCS
+    core/app.lua
+    core/config.lua
+    core/counter.lua
+    core/histogram.lua
     core/startup.lua
     core/main.lua
     core/shm.lua
     core/lib.lua
+    core/link.lua
+    core/memory.lua
+    core/packet.lua
+    core/timer.lua
+    lib/ctable.lua
+    lib/index_set.lua
+    lib/json.lua
+    lib/ipc/shmem/shmem.lua
     lib/lua/alt_getopt.lua
     lib/lua/class.lua
     lib/lua/StackTracePlus.lua
     lib/lua/strict.lua
-    lib/ipc/shmem/shmem.lua
     jit/zone.lua
+    syscall/shared/types.lua
+    syscall.lua
+    syscall/abi.lua
+    syscall/bit.lua
+    syscall/compat.lua
+    syscall/ffitypes.lua
+    syscall/helpers.lua
+    syscall/lfs.lua
+    syscall/libc.lua
+    syscall/methods.lua
+    syscall/syscalls.lua
+    syscall/types.lua
+    syscall/util.lua
+    syscall/linux/c.lua
+    syscall/linux/cgroup.lua
+    syscall/linux/constants.lua
+    syscall/linux/errors.lua
+    syscall/linux/fcntl.lua
+    syscall/linux/ffi.lua
+    syscall/linux/ioctl.lua
+    syscall/linux/netfilter.lua
+    syscall/linux/nl.lua
+    syscall/linux/nr.lua
+    syscall/linux/sockopt.lua
+    syscall/linux/syscalls.lua
+    syscall/linux/types.lua
+    syscall/linux/util.lua
+    syscall/linux/x64/constants.lua
+    syscall/linux/x64/ffi.lua
+    syscall/linux/x64/ioctl.lua
+    syscall/linux/x64/nr.lua
     )
 
 foreach(lua_source ${LUA_SRCS})
