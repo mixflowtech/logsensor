@@ -11,6 +11,8 @@ Usage:
   snabb lgs extract <stream_name> [filename] [--rule <rule_name>] [--sample <N>]
   snabb lgs auth -u <user_name> [-h <host>]
   snabb lgs run　[-c conf_path] [--key key_file] [--host <host>]
+  snabb lgs reload
+  snabb lgs agent -i [-n <agent_name>]
 
 
 Use --help for per-command usage. Example:

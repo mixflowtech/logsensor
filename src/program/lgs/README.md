@@ -48,3 +48,11 @@
 - {prog} run　[-c conf_path] [--key key_file] [--host <host>]
     
     运行　agent 传输数据
+    
+- {prog} reload    
+    
+    重新加载配置相
+    
+-  {prog} agent        
+    
+    运行于　Agent 模式，　实际处理文件传输
