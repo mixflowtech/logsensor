@@ -30,6 +30,9 @@ set(LUA_HEADERS
     core/lib.h
     core/link.h
     core/clib.h
+    core/memory.h
+    core/counter.h
+    core/packet.h
     lib/ipc/shmem/shmem.h
     )
 
@@ -65,6 +68,7 @@ set(LUA_SRCS
     core/app.lua
     core/config.lua
     core/counter.lua
+    core/histogram.lua
     core/startup.lua
     core/main.lua
     core/shm.lua
