@@ -21,6 +21,7 @@ ADD_CUSTOM_TARGET(
 
 # copy file
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/src/syscall/linux)
+file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/src/syscall/shared)
 
 add_custom_target(copy_ljsyscall)
 
@@ -38,7 +39,7 @@ add_custom_command(TARGET copy_ljsyscall PRE_BUILD
                    copy ${CMAKE_SOURCE_DIR}/lib/ljsyscall/syscall/linux/x64/*.lua   ${CMAKE_SOURCE_DIR}/src/syscall/linux/ )
 add_custom_command(TARGET copy_ljsyscall PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E
-                   copy ${CMAKE_SOURCE_DIR}/lib/ljsyscall/syscall/shared/*.lua   ${CMAKE_SOURCE_DIR}/src/syscall/ )
+                   copy ${CMAKE_SOURCE_DIR}/lib/ljsyscall/syscall/shared/*.lua   ${CMAKE_SOURCE_DIR}/src/syscall/shared )
 
 # do copy file task here
 add_subdirectory (src)
