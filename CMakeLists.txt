@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.11)
 project (snabb)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
+set(CMAKE_LUA_COMPILER ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin/luajit CACHE FILEPATH "The LuaJIT compiler")
 set(MAKE make)
 set(LUAJIT_CFLAGS ${CMAKE_SOURCE_DIR}/gcc-preinclude.h)
 
@@ -13,11 +13,14 @@ set(LUAJIT_CFLAGS ${CMAKE_SOURCE_DIR}/gcc-preinclude.h)
 # set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Werror -Wall ${CMAKE_C_FLAGS}")
  set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Wall ${CMAKE_C_FLAGS}")
 
-add_custom_target(
-   luajit
-   COMMAND $(MAKE) PREFIX=`pwd`/usr/local CFLAGS="$(LUAJIT_CFLAGS)" && $(MAKE) DESTDIR=`pwd` install
-   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/luajit
-)
+#add_custom_target(
+#   luajit
+#   COMMAND $(MAKE) PREFIX=`pwd`/usr/local CFLAGS="$(LUAJIT_CFLAGS)" && $(MAKE) DESTDIR=`pwd` install
+#   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/luajit
+#)
+
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib/luajit/usr/local)
+add_subdirectory (lib/luajit)
 
 ADD_CUSTOM_TARGET(
     make_ln_luajit

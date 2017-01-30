@@ -7,7 +7,7 @@ set(CMAKE_LUA_COMPILER ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin/luajit CACHE
 set(CMAKE_LUA_COMPILE_OBJECT  "<CMAKE_LUA_COMPILER> <FLAGS> <SOURCE> <OBJECT>")
 set(CMAKE_LUA_SOURCE_FILE_EXTENSIONS lua;luah)
 
-# message("CMAKE_LUA_COMPILE_OBJECT is ${CMAKE_LUA_COMPILE_OBJECT}")
+message("CMAKE_LUA_COMPILE_OBJECT is ${CMAKE_LUA_COMPILE_OBJECT}")
 
 
 enable_language(LUA OPTIONAL)
@@ -120,6 +120,8 @@ foreach(lua_source ${LUA_SRCS})
     STRING(REPLACE "/" "." lua_source_module_name ${lua_source})
     STRING(REGEX REPLACE "\\.lua$" "" lua_source_module_name ${lua_source_module_name})
     # MESSAGE( STATUS "Including dir " ${lua_source} ${lua_source_module_name} )
+    SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES LANGUAGE LUA )
+    # SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES OUTPUT_NAME "${lua_source}.o" )
     set_source_files_properties(${lua_source}
                                 PROPERTIES COMPILE_FLAGS "-n ${lua_source_module_name}")
 endforeach()
