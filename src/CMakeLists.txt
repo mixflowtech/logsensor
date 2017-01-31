@@ -2,7 +2,7 @@ set(CMAKE_LUA_OUTPUT_EXTENSION ".o")
 set(CMAKE_LUA_OUTPUT_EXTENSION_REPLACE 1)
 
 set(CMAKE_LUA_FLAGS " -bg")
-set(CMAKE_LUA_COMPILER ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin/luajit CACHE FILEPATH "The LuaJIT compiler")
+set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
 
 set(CMAKE_LUA_COMPILE_OBJECT  "<CMAKE_LUA_COMPILER> <FLAGS> <SOURCE> <OBJECT>")
 set(CMAKE_LUA_SOURCE_FILE_EXTENSIONS lua;luah)
@@ -147,7 +147,7 @@ add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA
 # public include directories we will use those link directories when building
 # helloDemo
 
-add_dependencies(snabb luajit make_ln_luajit copy_ljsyscall luv )
+add_dependencies(snabb luajit copy_ljsyscall luv )
 target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/libluajit-static.a)
 
 # target_link_libraries (snabb LINK_PUBLIC luajit)
