@@ -11,7 +11,6 @@ set(LUAJIT_CFLAGS ${CMAKE_SOURCE_DIR}/gcc-preinclude.h)
 #
 
 # set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Werror -Wall ${CMAKE_C_FLAGS}")
- set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Wall ${CMAKE_C_FLAGS}")
 
 #add_custom_target(
 #   luajit

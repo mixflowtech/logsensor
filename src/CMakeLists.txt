@@ -19,6 +19,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/
     )
 
+set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Wall ${CMAKE_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lrt -lc -ldl -lm -lpthread ")
 
 # Lua C FFI Header
@@ -147,6 +148,6 @@ add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA
 # helloDemo
 
 add_dependencies(snabb luajit make_ln_luajit copy_ljsyscall luv )
-target_link_libraries(snabb ${CMAKE_SOURCE_DIR}/lib/luajit/src/libluajit.a)
+target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/libluajit-static.a)
 
 # target_link_libraries (snabb LINK_PUBLIC luajit)
