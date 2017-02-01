@@ -83,6 +83,11 @@ set(LUA_SRCS
     lib/lua/StackTracePlus.lua
     lib/lua/strict.lua
     jit/zone.lua
+    )
+
+if(NOT WIN32)
+  set(LUA_SRCS
+    ${LUA_SRCS}     
     syscall/shared/types.lua
     syscall.lua
     syscall/abi.lua
@@ -115,6 +120,7 @@ set(LUA_SRCS
     syscall/linux/x64/ioctl.lua
     syscall/linux/x64/nr.lua
     )
+ENDIF()
 
 foreach(lua_source ${LUA_SRCS})
     STRING(REPLACE "/" "." lua_source_module_name ${lua_source})
