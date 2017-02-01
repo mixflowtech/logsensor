@@ -2,12 +2,12 @@ set(CMAKE_LUA_OUTPUT_EXTENSION ".o")
 set(CMAKE_LUA_OUTPUT_EXTENSION_REPLACE 1)
 
 set(CMAKE_LUA_FLAGS " -bg")
-set(CMAKE_LUA_COMPILER ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin/luajit CACHE FILEPATH "The LuaJIT compiler")
+set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
 
 set(CMAKE_LUA_COMPILE_OBJECT  "<CMAKE_LUA_COMPILER> <FLAGS> <SOURCE> <OBJECT>")
 set(CMAKE_LUA_SOURCE_FILE_EXTENSIONS lua;luah)
 
-# message("CMAKE_LUA_COMPILE_OBJECT is ${CMAKE_LUA_COMPILE_OBJECT}")
+message("CMAKE_LUA_COMPILE_OBJECT is ${CMAKE_LUA_COMPILE_OBJECT}")
 
 
 enable_language(LUA OPTIONAL)
@@ -19,6 +19,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/
     )
 
+set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Wall ${CMAKE_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lrt -lc -ldl -lm -lpthread ")
 
 # Lua C FFI Header
@@ -126,6 +127,8 @@ foreach(lua_source ${LUA_SRCS})
     STRING(REPLACE "/" "." lua_source_module_name ${lua_source})
     STRING(REGEX REPLACE "\\.lua$" "" lua_source_module_name ${lua_source_module_name})
     # MESSAGE( STATUS "Including dir " ${lua_source} ${lua_source_module_name} )
+    SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES LANGUAGE LUA )
+    # SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES OUTPUT_NAME "${lua_source}.o" )
     set_source_files_properties(${lua_source}
                                 PROPERTIES COMPILE_FLAGS "-n ${lua_source_module_name}")
 endforeach()
@@ -150,7 +153,7 @@ add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA
 # public include directories we will use those link directories when building
 # helloDemo
 
-add_dependencies(snabb luajit make_ln_luajit copy_ljsyscall luv )
-target_link_libraries(snabb ${CMAKE_SOURCE_DIR}/lib/luajit/src/libluajit.a)
+add_dependencies(snabb luajit copy_ljsyscall luv )
+target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/libluajit-static.a)
 
 # target_link_libraries (snabb LINK_PUBLIC luajit)
