@@ -92,10 +92,14 @@ set(LUA_SRCS
     lib/lua/class.lua
     lib/lua/StackTracePlus.lua
     lib/lua/strict.lua
-    jit/zone.lua
     )
 
 if(NOT WIN32)
+  set(LUA_SRCS
+    ${LUA_SRCS}   
+    jit/zone.lua
+    )
+
   set(LUA_SRCS
     ${LUA_SRCS}     
     syscall/shared/types.lua
@@ -184,6 +188,9 @@ add_dependencies(snabb copy_ljsyscall)
 ENDIF()
 
 add_dependencies(snabb luajit luv )
+if(WIN32)
+target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/luajit-static.lib)
+ELSE()
 target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/libluajit-static.a)
-
+ENDIF()
 # target_link_libraries (snabb LINK_PUBLIC luajit)
