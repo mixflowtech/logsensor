@@ -6,7 +6,7 @@
 #include "lualib.h"
 #include "lauxlib.h"
 // #include "luv_pub.h"
-#include <stdint.h>
+// #include <stdint.h>
 #include <string.h>
 
 #if UINTPTR_MAX != UINT64_MAX
@@ -38,9 +38,9 @@ int main(int snabb_argc, char **snabb_argv)
 {
   int n = 0;
   /* Store for use by LuaJIT code via FFI. */
+  lua_State* L = luaL_newstate();
   argc = snabb_argc;
   argv = snabb_argv;
-  lua_State* L = luaL_newstate();
   luaL_openlibs(L);
   // FIXME: make libuv static linked?
   // n = luaopen_luv(L);

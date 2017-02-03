@@ -47,6 +47,19 @@ IF(MSVC)
   ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF()
 
+if(WIN32)
+  # replace /MD to /MT to avoid link msvcr*.dll
+  set(CompilerFlags
+    CMAKE_C_FLAGS
+    CMAKE_C_FLAGS_DEBUG
+    CMAKE_C_FLAGS_MINSIZEREL
+    CMAKE_C_FLAGS_RELWITHDEBINFO
+    CMAKE_C_FLAGS_RELEASE)
+  foreach(CompilerFlag ${CompilerFlags})
+    string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+  endforeach()
+endif()
+
 # Readline support
 FIND_PACKAGE(Readline)
 IF(READLINE_FOUND)

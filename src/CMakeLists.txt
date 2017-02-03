@@ -19,8 +19,16 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/
     )
 
+if(WIN32)
+include_directories(
+    ${CMAKE_SOURCE_DIR}/src/win
+    )
+ENDIF()
+
+if(NOT WIN32)
 set(CMAKE_C_FLAGS "-Wl,--no-as-needed -Wl,-E -Wall ${CMAKE_C_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lrt -lc -ldl -lm -lpthread ")
+ENDIF()
 
 # Lua C FFI Header
 
@@ -44,11 +52,12 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib/ipc/shmem)
 foreach(lua_head ${LUA_HEADERS})
     ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
-        COMMAND echo 'module\(...,package.seeall\); require\(\"ffi\"\).cdef[=============[' > '${CMAKE_BINARY_DIR}/src/${lua_head}.luah'
+        COMMAND echo "module\(...,package.seeall\); require\(\"ffi\"\).cdef[=============[" > "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         COMMAND cat ${CMAKE_SOURCE_DIR}/src/${lua_head} >> ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
-        COMMAND echo ']=============]'>>${CMAKE_BINARY_DIR}/src/${lua_head}.luah
+        COMMAND echo "]=============]" >> "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         DEPENDS ${CMAKE_SOURCE_DIR}/src/${lua_head}
     )
+
     list(APPEND LUA_LUA_HEADERS_SRCS ${CMAKE_BINARY_DIR}/src/${lua_head}.luah)
 
     # update
@@ -135,25 +144,46 @@ endforeach()
 
 # C code
 set(C_SRCS
+    )
+
+if(NOT WIN32)
+  set(C_SRCS
+    ${C_SRCS}
     arch/avx2.c
-    arch/sse2.c
+    arch/sse2.c   
     core/lib.c
     core/memory.c
     lib/checksum.c
     lib/ipc/shmem/shmem.c
-    )
-
+    )    
 set_source_files_properties(arch/avx2.c
-                                PROPERTIES COMPILE_FLAGS " -O2 -mavx2 ")
+                                PROPERTIES COMPILE_FLAGS_RELEASE " -O2 -mavx2 ")
 set_source_files_properties(arch/sse2.c
-                                PROPERTIES COMPILE_FLAGS " -O2 -msse2 ")
+                                PROPERTIES COMPILE_FLAGS_RELEASE " -O2 -msse2 ")
+
+ENDIF()
 
 add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA_SRCS})
 # Link the executable to the Hello library. Since the Hello library has
 # public include directories we will use those link directories when building
 # helloDemo
 
-add_dependencies(snabb luajit copy_ljsyscall luv )
+if(WIN32)
+# add_custom_target(copy_luajit_jit)
+file(COPY ${CMAKE_SOURCE_DIR}/lib/luajit/src/jit DESTINATION ${CMAKE_BINARY_DIR}/lib/luajit/lua ) 
+
+#add_custom_command(TARGET copy_luajit_jit PRE_BUILD
+#                   COMMAND ${CMAKE_COMMAND} -E
+#                   copy ${CMAKE_SOURCE_DIR}/lib/ljsyscall/syscall.lua   ${CMAKE_SOURCE_DIR}/src/ )
+
+# add_dependencies(snabb copy_luajit_jit)
+ENDIF()
+
+if(NOT WIN32)
+add_dependencies(snabb copy_ljsyscall)
+ENDIF()
+
+add_dependencies(snabb luajit luv )
 target_link_libraries(snabb ${CMAKE_BINARY_DIR}/lib/luajit/libluajit-static.a)
 
 # target_link_libraries (snabb LINK_PUBLIC luajit)

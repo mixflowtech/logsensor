@@ -18,6 +18,12 @@ set(LUAJIT_CFLAGS ${CMAKE_SOURCE_DIR}/gcc-preinclude.h)
 #   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/luajit
 #)
 
+# Ugly warnings
+IF(MSVC)
+  ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /OPT:REF /OPT:NOICF")
+ENDIF()
+
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/lib/luajit/usr/local)
 add_subdirectory (lib/luajit)
 
@@ -28,6 +34,7 @@ ADD_CUSTOM_TARGET(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin
     DEPENDS luajit)
 
+if(NOT WIN32)
 # copy file
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/src/syscall/linux)
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/src/syscall/linux/x64)
@@ -50,13 +57,14 @@ add_custom_command(TARGET copy_ljsyscall PRE_BUILD
 add_custom_command(TARGET copy_ljsyscall PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E
                    copy ${CMAKE_SOURCE_DIR}/lib/ljsyscall/syscall/shared/*.lua   ${CMAKE_SOURCE_DIR}/src/syscall/shared/ )
+ENDIF()
 
 # do copy file task here
 set(WITH_LUA_ENGINE "LuaJIT")
 set(LUA_BUILD_TYPE "System")
 set(LUAJIT_FOUND True)
 set(LUAJIT_INCLUDE_DIR  ${CMAKE_SOURCE_DIR}/lib/luajit/src/)
-set(LUAJIT_LIBRARIES    ${CMAKE_BINARY_DIR}/lib/luajit/)
+set(LUAJIT_LIBRARIES    ${CMAKE_BINARY_DIR}/lib/luajit/luajit-static.lib)
 set(BUILD_MODULE ON)
 SET(WITH_SHARED_LUA OFF)
 add_subdirectory (lib/luv)
