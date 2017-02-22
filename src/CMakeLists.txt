@@ -50,13 +50,23 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib/ipc)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib/ipc/shmem)
 
 foreach(lua_head ${LUA_HEADERS})
+if(WIN32)
+    ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
+        COMMAND echo "module\(...,package.seeall\); require\(\"ffi\"\).cdef[=============[" > "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
+        COMMAND cat ${CMAKE_SOURCE_DIR}/src/${lua_head} >> ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
+        COMMAND echo "]=============]" >> "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
+        DEPENDS ${CMAKE_SOURCE_DIR}/src/${lua_head}
+    )
+ELSE()
     ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
         COMMAND echo \"module\(...,package.seeall\); require\(\\\"ffi\\\"\).cdef[=============[\" > "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         COMMAND cat ${CMAKE_SOURCE_DIR}/src/${lua_head} >> ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
         COMMAND echo \"]=============]\" >> "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         DEPENDS ${CMAKE_SOURCE_DIR}/src/${lua_head}
-    )
+    )    
+ENDIF()
 
     list(APPEND LUA_LUA_HEADERS_SRCS ${CMAKE_BINARY_DIR}/src/${lua_head}.luah)
 

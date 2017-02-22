@@ -2,6 +2,15 @@
 
 LogSensor (Sensor for short. ) is a general purpose log data processing skeleton.
 
+# Build
+
+git clone --depth 3  --recurse-submodules https://github.com/mixflowtech/logsensor.git
+make
+
+mkdir build & cd build
+cmake ..
+
+
 # Design
 
 The System composed with two parts.
