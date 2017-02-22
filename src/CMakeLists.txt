@@ -104,6 +104,16 @@ set(LUA_SRCS
     lib/lua/strict.lua
     )
 
+
+IF(WIN32)
+  set(JIT_SOURCE_PATH ${CMAKE_SOURCE_DIR}/lib/luajit/src/ )  
+  # FIXME: add all the other jit related code.
+  set(JIT_SRCS
+    ${JIT_SOURCE_PATH}jit/zone.lua
+    )
+
+ENDIF()
+
 if(NOT WIN32)
   set(LUA_SRCS
     ${LUA_SRCS}   
@@ -156,6 +166,17 @@ foreach(lua_source ${LUA_SRCS})
                                 PROPERTIES COMPILE_FLAGS "-n ${lua_source_module_name}")
 endforeach()
 
+foreach(lua_source ${JIT_SRCS})
+    STRING(REPLACE ${JIT_SOURCE_PATH} "" lua_source_module_name ${lua_source})
+    STRING(REPLACE "/" "." lua_source_module_name ${lua_source_module_name})
+    STRING(REGEX REPLACE "\\.lua$" "" lua_source_module_name ${lua_source_module_name})
+    # MESSAGE( STATUS "Including dir " ${lua_source} ${lua_source_module_name} )
+    SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES LANGUAGE LUA )
+    # SET_SOURCE_FILES_PROPERTIES(${lua_source} PROPERTIES OUTPUT_NAME "${lua_source}.o" )
+    set_source_files_properties(${lua_source}
+                                PROPERTIES COMPILE_FLAGS "-n ${lua_source_module_name}")
+endforeach()
+
 # C code
 set(C_SRCS
     )
@@ -177,7 +198,7 @@ set_source_files_properties(arch/sse2.c
 
 ENDIF()
 
-add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA_SRCS})
+add_executable (snabb core/snabbswitch.c ${C_SRCS} ${LUA_LUA_HEADERS_SRCS} ${LUA_SRCS} ${JIT_SRCS} )
 # Link the executable to the Hello library. Since the Hello library has
 # public include directories we will use those link directories when building
 # helloDemo
