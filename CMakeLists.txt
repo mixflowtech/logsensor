@@ -2,7 +2,10 @@ cmake_minimum_required (VERSION 2.8.11)
 project (snabb)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
+# set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
+# On Linux inplace luajit not work.
+set(CMAKE_LUA_COMPILER ${CMAKE_SOURCE_DIR}/lib/luajit/usr/local/bin/luajit CACHE FILEPATH "The LuaJIT compiler")
+
 set(MAKE make)
 set(LUAJIT_CFLAGS ${CMAKE_SOURCE_DIR}/gcc-preinclude.h)
 

@@ -2,7 +2,7 @@ set(CMAKE_LUA_OUTPUT_EXTENSION ".o")
 set(CMAKE_LUA_OUTPUT_EXTENSION_REPLACE 1)
 
 set(CMAKE_LUA_FLAGS " -bg")
-set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
+# set(CMAKE_LUA_COMPILER ${CMAKE_BINARY_DIR}/lib/luajit/luajit CACHE FILEPATH "The LuaJIT compiler")
 
 set(CMAKE_LUA_COMPILE_OBJECT  "<CMAKE_LUA_COMPILER> <FLAGS> <SOURCE> <OBJECT>")
 set(CMAKE_LUA_SOURCE_FILE_EXTENSIONS lua;luah)
@@ -52,9 +52,9 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/src/lib/ipc/shmem)
 foreach(lua_head ${LUA_HEADERS})
     ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
-        COMMAND echo "module\(...,package.seeall\); require\(\"ffi\"\).cdef[=============[" > "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
+        COMMAND echo \"module\(...,package.seeall\); require\(\\\"ffi\\\"\).cdef[=============[\" > "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         COMMAND cat ${CMAKE_SOURCE_DIR}/src/${lua_head} >> ${CMAKE_BINARY_DIR}/src/${lua_head}.luah
-        COMMAND echo "]=============]" >> "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
+        COMMAND echo \"]=============]\" >> "${CMAKE_BINARY_DIR}/src/${lua_head}.luah"
         DEPENDS ${CMAKE_SOURCE_DIR}/src/${lua_head}
     )
 
@@ -161,9 +161,9 @@ if(NOT WIN32)
     lib/ipc/shmem/shmem.c
     )    
 set_source_files_properties(arch/avx2.c
-                                PROPERTIES COMPILE_FLAGS_RELEASE " -O2 -mavx2 ")
+                                PROPERTIES COMPILE_FLAGS " -O2 -mavx2 ")
 set_source_files_properties(arch/sse2.c
-                                PROPERTIES COMPILE_FLAGS_RELEASE " -O2 -msse2 ")
+                                PROPERTIES COMPILE_FLAGS " -O2 -msse2 ")
 
 ENDIF()
 
